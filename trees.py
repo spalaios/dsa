@@ -1,3 +1,5 @@
+from queue import Queue
+from queue import LifoQueue
 class Node:
     def __init__(self, data):
         self.data = data
@@ -121,17 +123,62 @@ class Tree:
             current = current.left
         return current
 
+    #find the maximum value element
+    def maximum_value(self):
+        max_value = -1
+        if self.root is None:
+            return -1
+        else:
+            count = []
+            leftMax = self._maximum_value(self.root.left, count)
+            # print(leftMax)
+            count.clear()
+            rightMax = self._maximum_value(self.root.right, count)
+            # print(leftMax)
+        return max(max(leftMax), max(rightMax))
+
+    def _maximum_value(self, root, countList):
+        if root is None:
+            return 0
+        self._maximum_value(root.left, countList)
+        countList.append(root.data)
+        self._maximum_value(root.right, countList)
+        return countList
+
+    #level order traversal
+    def level_order_travesal(self):
+        max_value = -1
+        queue = Queue()
+        stack = []
+        if self.root is None:
+            return queue
+        else:
+            queue.put(self.root)
+            while not queue.empty():
+                temp = queue.get()
+                if temp.data > max_value:
+                    max_value = temp.data
+                stack.append(temp.data)
+                if temp.left:
+                    queue.put(temp.left)
+                if temp.right:
+                    queue.put(temp.right)
+        return stack , max_value
+
+
 
 
 tree = Tree()
 tree.insert_node(50)
-tree.insert_node(40)
-tree.insert_node(60)
+tree.insert_node(90005)
+tree.insert_node(600154)
 tree.insert_node(55)
 tree.insert_node(35)
-tree.insert_node(75)
+tree.insert_node(7558748)
 tree.insert_node(63)
 tree.insert_node(77)
 # a, b = tree.get_node_with_parent(63)
 # print(a.data, b.data)
-tree.remove_node(60)
+# tree.remove_node(60)
+print(tree.maximum_value())
+print(tree.level_order_travesal())
