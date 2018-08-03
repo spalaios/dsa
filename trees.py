@@ -165,20 +165,100 @@ class Tree:
                     queue.put(temp.right)
         return stack , max_value
 
+    def level(self):
+        stack = []
+        queue = Queue()
+        level = 0
+        if self.root is None:
+            return queue
+        else:
+            queue.put((self.root,0))
+            while not queue.empty():
+                temp = queue.get()
+                # print(temp[0].data)
+                stack.append((temp[0].data, temp[1]))
+                level = temp[1] + 1
+                if temp[0].left:
+                    queue.put((temp[0].left, level))
+                if temp[0].right:
+                    queue.put((temp[0].right, level))
+        return stack
+
+    def get_nodes_at_level(self, level):
+        levels_list = self.level()
+        if levels_list:
+            result = [i[0] for i in levels_list if i[1] == level]
+        return result
+
+    def get_max_level_of_tree(self):
+        tree_list = self.level()
+        return max([i[1] for i in tree_list])
+
+    def deepest_node(self):
+        tree_list = self.level()
+        max_level = self.get_max_level_of_tree()
+        if tree_list:
+            return [i[0] for i in tree_list if i[1] == max_level][0]
+
+    def find_all_leaf_nodes(self):
+        leaf_nodes_list = []
+        if self.root is None:
+            return
+        elif self.root.left is None and self.root.right is None:
+            leaf_nodes_list.append(self.root.data)
+            return leaf_nodes_list
+        else:
+            left_tree = self._leaf_nodes(self.root.left, leaf_nodes_list)
+            right_tree = self._leaf_nodes(self.root.right, leaf_nodes_list)
+        leaf_nodes_list = left_tree
+        return  leaf_nodes_list
+
+    def _leaf_nodes(self,root, leaf_list):
+        if root is None:
+            return
+        else:
+            self._leaf_nodes(root.left, leaf_list)
+            if root.left is None and root.right is None:
+                leaf_list.append(root.data)
+            self._leaf_nodes(root.right, leaf_list)
+        return leaf_list
+
+    def leaf_nodes_iteratively(self):
+        queue = Queue()
+        stack = []
+        queue.put(self.root)
+        while not queue.empty():
+            temp = queue.get()
+            if temp.left is None and temp.right is None:
+                stack.append(temp.data)
+
+            if temp.left:
+                queue.put(temp.left)
+            if temp.right:
+                queue.put(temp.right)
+        return stack
+
 
 
 
 tree = Tree()
 tree.insert_node(50)
-tree.insert_node(90005)
-tree.insert_node(600154)
+tree.insert_node(60)
+tree.insert_node(40)
 tree.insert_node(55)
 tree.insert_node(35)
-tree.insert_node(7558748)
+tree.insert_node(75)
 tree.insert_node(63)
 tree.insert_node(77)
+tree.insert_node(150)
 # a, b = tree.get_node_with_parent(63)
 # print(a.data, b.data)
 # tree.remove_node(60)
-print(tree.maximum_value())
-print(tree.level_order_travesal())
+# print(tree.maximum_value())
+# print(tree.level_order_travesal())
+# print(tree.level())
+# print(tree.get_nodes_at_level(3))
+# print(tree.get_max_level_of_tree())
+# print(tree.deepest_node())
+print(tree.find_all_leaf_nodes())
+print(tree.leaf_nodes_iteratively())
